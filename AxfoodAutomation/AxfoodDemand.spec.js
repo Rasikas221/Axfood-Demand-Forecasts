@@ -47,7 +47,7 @@ test("Download and Upload Report", async ({ page }) => {
 
         // Click to company logo
         await page.getByRole("button", { name: "Company Logo" }).click();
-        await expect(page).toHaveTitle(/Home/);
+        await expect(page).toHaveTitle(/Homes/);
 
         // Click to "Demand forecast DC Tile"
         await page.getByRole("link", { name: "Demand forecast DC Tile" }).click();
