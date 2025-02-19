@@ -5,7 +5,6 @@ import axfoodCredentials from "../credentials/axfoodCredentials";
 const XLSX = require("xlsx");
 
 test("Create xlsx", async ({ }) => {
-    console.log("Date and Time");
     try {
         // Get the current date and time as a string
         const options = { timeZone: 'Etc/GMT-1', hour12: true };
@@ -26,7 +25,6 @@ test("Create xlsx", async ({ }) => {
 });
 
 test("Download and Upload Report", async ({ page }) => {
-    console.log("Download and Update");
     // Navigate to the Axfood supplier portal
     await page.goto("https://leverantor.axfood.se/");
     await expect(page).toHaveTitle(/Axfood IT AB/);
