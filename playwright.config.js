@@ -25,10 +25,10 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  timeout: 1 * 100 * 2000,
+  timeout: 2 * 100 * 2000,
 
   expect: {
-    timeout: 2 * 2000,
+    timeout: 3 * 2000,
   },
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */

@@ -25,70 +25,64 @@ test("Create xlsx", async ({ }) => {
 });
 
 test("Download and Upload Report", async ({ page }) => {
-    try {
-        // Navigate to the Axfood supplier portal
-        await page.goto("https://leverantor.axfood.se/");
-        await expect(page).toHaveTitle(/Axfood IT AB/);
+    // Navigate to the Axfood supplier portal
+    await page.goto("https://leverantor.axfood.se/");
+    await expect(page).toHaveTitle(/Axfood IT AB/);
 
-        // Fill in the login credentials
-        await page.getByRole("textbox", { name: "User name:" }).fill(axfoodCredentials.username);
-        await page.getByRole("textbox", { name: "Password:" }).fill(axfoodCredentials.password);
-        await page.getByRole("link", { name: "Log On" }).click();
+    // Fill in the login credentials
+    await page.getByRole("textbox", { name: "User name:" }).fill(axfoodCredentials.username);
+    await page.getByRole("textbox", { name: "Password:" }).fill(axfoodCredentials.password);
+    await page.getByRole("link", { name: "Log On" }).click();
 
-        // Change language to Swedish
-        const isEnglishVisible = await page.getByRole("button", { name: "News page" }).isVisible();
-        if (!isEnglishVisible) {
-            await page.getByRole("button", { name: "" }).click();
-            await page.getByRole("button", { name: "English" }).click();
-        } else {
-            await page.getByRole("button", { name: "" }).click();
-            await page.getByRole("button", { name: "Engelska" }).click();
-        }
-
-        // Click to company logo
-        await page.getByRole("button", { name: "Company Logo" }).click();
-        await expect(page).toHaveTitle(/Homes/);
-
-        // Click to "Demand forecast DC Tile"
-        await page.getByRole("link", { name: "Demand forecast DC Tile" }).click();
-        await expect(page).toHaveTitle(/Demand forecast DC/);
-
-        // Click search button
-        await page.getByRole("button", { name: "Search", exact: true }).click();
-
-        // Download the xlsx file
-        const downloadPromise = page.waitForEvent("download");
-        await page.getByRole("button", { name: "Exportera till excel" }).click();
-        const download = await downloadPromise;
-        await download.saveAs("download/achaulienReport.xlsx");
-
-        // Navigate to SharePoint site
-        await page.goto("https://achaulien.sharepoint.com/sites/aclhub/AxfoodDemandForecast/Forms/AllItems.aspx?npsAction=createList");
-
-        // Login to SharePoint
-        await page.getByPlaceholder("Email, phone, or Skype").fill(SPcredentials.username);
-        await page.getByRole("button", { name: "Next" }).click();
-        await page.getByPlaceholder("Password").fill(SPcredentials.password);
-        await page.getByRole("button", { name: "Sign in" }).click();
-        await page.getByRole("button", { name: "Yes" }).click();
-
-        // Upload the file to SharePoint
-        await page.waitForTimeout(10000); // Consider replacing this with an explicit wait
-        await page.getByRole("menuitem", { name: "Upload" }).click();
-        const [fileChooser] = await Promise.all([
-            page.waitForEvent("filechooser"),
-            page.getByLabel("Files", { exact: true }).click(),
-        ]);
-        await fileChooser.setFiles([
-            "download/achaulienReport.xlsx",
-            "download/CurrentDateTime.xlsx",
-        ]);
-        await page.getByRole("button", { name: "Replace all" }).click();
-        await expect(page.getByRole("alert")).toBeVisible();
-    } catch (error) {
-        console.log("Error: ", error);
-    } finally {
-        // Close the browser window
-        await page.close();
+    // Change language to Swedish
+    const isEnglishVisible = await page.getByRole("button", { name: "News page" }).isVisible();
+    if (!isEnglishVisible) {
+        await page.getByRole("button", { name: "" }).click();
+        await page.getByRole("button", { name: "English" }).click();
+    } else {
+        await page.getByRole("button", { name: "" }).click();
+        await page.getByRole("button", { name: "Engelska" }).click();
     }
+
+    // Click to company logo
+    await page.getByRole("button", { name: "Company Logo" }).click();
+    await expect(page).toHaveTitle(/Homes/);
+
+    // Click to "Demand forecast DC Tile"
+    await page.getByRole("link", { name: "Demand forecast DC Tile" }).click();
+    await expect(page).toHaveTitle(/Demand forecast DC/);
+
+    // Click search button
+    await page.getByRole("button", { name: "Search", exact: true }).click();
+
+    // Download the xlsx file
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Exportera till excel" }).click();
+    const download = await downloadPromise;
+    await download.saveAs("download/achaulienReport.xlsx");
+
+    // Navigate to SharePoint site
+    await page.goto("https://achaulien.sharepoint.com/sites/aclhub/AxfoodDemandForecast/Forms/AllItems.aspx?npsAction=createList");
+
+    // Login to SharePoint
+    await page.getByPlaceholder("Email, phone, or Skype").fill(SPcredentials.username);
+    await page.getByRole("button", { name: "Next" }).click();
+    await page.getByPlaceholder("Password").fill(SPcredentials.password);
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await page.getByRole("button", { name: "Yes" }).click();
+
+    // Upload the file to SharePoint
+    await page.waitForTimeout(10000); // Consider replacing this with an explicit wait
+    await page.getByRole("menuitem", { name: "Upload" }).click();
+    const [fileChooser] = await Promise.all([
+        page.waitForEvent("filechooser"),
+        page.getByLabel("Files", { exact: true }).click(),
+    ]);
+    await fileChooser.setFiles([
+        "download/achaulienReport.xlsx",
+        "download/CurrentDateTime.xlsx",
+    ]);
+    await page.getByRole("button", { name: "Replace all" }).click();
+    await expect(page.getByRole("alert")).toBeVisible();
+    await page.close();
 });
